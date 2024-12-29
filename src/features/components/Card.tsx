@@ -11,21 +11,29 @@ import {
 import { useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 
-export const Card = () => {
+interface INotes {
+  id: number;
+  title: string;
+  text: string;
+  date: string;
+}
+
+export const Card = ({ id, title, text, date }: INotes) => {
   const [checked, setChecked] = useState<boolean>(false);
 
   return (
     <GridItem
+      key={id}
       colSpan={2}
       borderRadius="md"
-      px={2}
-      py={1}
+      px={3}
+      py={2}
       boxShadow="0px 6px 12px rgba(0, 112, 243, 0.3)"
       _hover={{ boxShadow: "0px 6px 12px rgba(0, 112, 243, 0.5)" }}
       h={255}
     >
       <Flex direction={"column"} h="100%">
-        <Flex justifyContent={"space-between"} align={'center'}>
+        <Flex justifyContent={"space-between"} align={"center"}>
           <Badge colorPalette="blue" size={"md"} w={"fit"} px={4}>
             New
           </Badge>
@@ -58,18 +66,12 @@ export const Card = () => {
             mt={2}
             textWrap={"wrap"}
           >
-            Title
+            {title}
           </Text>
-          <Text lineClamp={5}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis fugit
-            fuga incidunt consequatur dolores.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis fugit
-            fuga incidunt consequatur dolores.Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis fugit
-            fuga incidunt consequatur dolores.
-          </Text>
+          <Text lineClamp={5}>{text}</Text>
         </Box>
         <Text ml={"auto"} mt={3} color={"gray.600"}>
-          22-01-2024
+          {date}
         </Text>
       </Flex>
     </GridItem>
