@@ -12,8 +12,8 @@ import {
 import { useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { toaster } from "@/components/ui/toaster";
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css'
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 interface INotes {
   id: number;
@@ -22,14 +22,12 @@ interface INotes {
   date: string;
 }
 
-
-
 export const Card = ({ id, title, text, date }: INotes) => {
-  const [checked, setChecked] = useState<boolean>(false);
+  const [isArchived, setIsArchived] = useState<boolean>(false);
 
   async function handleDelete(id: number) {
     const { error } = await supabase.from("notes").delete().eq("id", id);
-  
+
     if (error) {
       toaster.error({
         description: `Failed to delete note: ${error.message}`,
@@ -37,14 +35,14 @@ export const Card = ({ id, title, text, date }: INotes) => {
       });
       return;
     }
-  
+
     toaster.success({
       description: "Note deleted successfully",
       duration: 3000,
     });
   }
 
-  const confirmDelete = (id:number) => {
+  const confirmDelete = (id: number) => {
     confirmAlert({
       title: "Confirm to delete",
       message: "Are you sure you want to delete this note?",
@@ -58,6 +56,27 @@ export const Card = ({ id, title, text, date }: INotes) => {
         },
       ],
     });
+  };
+
+  async function changeArchive(id: number, archived: boolean) {
+    const { error } = await supabase
+      .from("notes")
+      .update({ archived: !archived })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error archiving note:", error.message);
+      return false;
+    }
+
+    return true;
+  }
+
+  const handleCheckboxChange = async () => {
+    const success = await changeArchive(id, isArchived);
+    if (success) {
+      setIsArchived(!isArchived);
+    }
   };
 
   return (
@@ -78,8 +97,8 @@ export const Card = ({ id, title, text, date }: INotes) => {
           </Badge>
           <HStack wrap={"wrap"}>
             <Checkbox
-              checked={checked}
-              onCheckedChange={(e) => setChecked(!!e.checked)}
+              checked={isArchived}
+              onCheckedChange={handleCheckboxChange}
               colorPalette={"green"}
               borderRadius="md"
               borderWidth="2px"
@@ -88,7 +107,7 @@ export const Card = ({ id, title, text, date }: INotes) => {
               aria-label="Delete note"
               bg={"white"}
               color={"red.500"}
-              onClick={()=>confirmDelete(id)}
+              onClick={() => confirmDelete(id)}
               borderRadius="md"
               borderWidth="3px"
               borderColor="red.300"
