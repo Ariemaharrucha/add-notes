@@ -1,4 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
+import supabase from "@/config/supabaseClient";
 import {
   Badge,
   Box,
@@ -10,6 +11,9 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+import { toaster } from "@/components/ui/toaster";
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 interface INotes {
   id: number;
@@ -18,8 +22,43 @@ interface INotes {
   date: string;
 }
 
+
+
 export const Card = ({ id, title, text, date }: INotes) => {
   const [checked, setChecked] = useState<boolean>(false);
+
+  async function handleDelete(id: number) {
+    const { error } = await supabase.from("notes").delete().eq("id", id);
+  
+    if (error) {
+      toaster.error({
+        description: `Failed to delete note: ${error.message}`,
+        duration: 3000,
+      });
+      return;
+    }
+  
+    toaster.success({
+      description: "Note deleted successfully",
+      duration: 3000,
+    });
+  }
+
+  const confirmDelete = (id:number) => {
+    confirmAlert({
+      title: "Confirm to delete",
+      message: "Are you sure you want to delete this note?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => handleDelete(id),
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
+  };
 
   return (
     <GridItem
@@ -42,18 +81,37 @@ export const Card = ({ id, title, text, date }: INotes) => {
               checked={checked}
               onCheckedChange={(e) => setChecked(!!e.checked)}
               colorPalette={"green"}
+              borderRadius="md"
+              borderWidth="2px"
             ></Checkbox>
             <IconButton
-              aria-label="Search database"
+              aria-label="Delete note"
               bg={"white"}
               color={"red.500"}
+              onClick={()=>confirmDelete(id)}
+              borderRadius="md"
+              borderWidth="3px"
+              borderColor="red.300"
+              _hover={{
+                bg: "red.50",
+                color: "red.700",
+                borderColor: "red.500",
+              }}
             >
               <AiFillDelete />
             </IconButton>
             <IconButton
-              aria-label="Search database"
-              color={"gray.600"}
+              aria-label="Edit note"
+              color={"blue.600"}
               bg={"white"}
+              borderRadius="md"
+              borderWidth="3px"
+              borderColor="blue.400"
+              _hover={{
+                bg: "blue.50",
+                color: "blue.800",
+                borderColor: "blue.500",
+              }}
             >
               <AiFillEdit />
             </IconButton>
