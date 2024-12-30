@@ -20,10 +20,11 @@ interface INotes {
   title: string;
   text: string;
   date: string;
+  archived: boolean;
 }
 
-export const Card = ({ id, title, text, date }: INotes) => {
-  const [isArchived, setIsArchived] = useState<boolean>(false);
+export const Card = ({ id, title, text, date, archived }: INotes) => {
+  const [isArchived, setIsArchived] = useState<boolean>(archived);
 
   async function handleDelete(id: number) {
     const { error } = await supabase.from("notes").delete().eq("id", id);
@@ -102,6 +103,7 @@ export const Card = ({ id, title, text, date }: INotes) => {
               colorPalette={"green"}
               borderRadius="md"
               borderWidth="2px"
+              cursor={'pointer'}
             ></Checkbox>
             <IconButton
               aria-label="Delete note"

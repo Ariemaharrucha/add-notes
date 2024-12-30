@@ -10,7 +10,8 @@ interface INotes {
   id: number,
   title: string,
   note_content: string,
-  date: string
+  date: string,
+  archived:  boolean
 } 
 
 export const Notes = () => {
@@ -32,15 +33,15 @@ export const Notes = () => {
 
   return (
     <Grid templateColumns="repeat(4, 1fr)" gap="6">
+    <AddNote/>
     {error && (<p>{error}</p>)}
     {notes && (
       notes.map((note)=>{
         return (
-          <Card key={note.id} id={note.id} title={note.title} text={note.note_content} date={note.date}/>   
+          <Card key={note.id} id={note.id} title={note.title} text={note.note_content} date={note.date} archived={note.archived} />   
         )
       })
     )}
-    <AddNote/>
     </Grid>
   );
 };
