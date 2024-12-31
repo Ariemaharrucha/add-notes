@@ -1,6 +1,6 @@
 import { Grid } from "@chakra-ui/react";
 import { Card } from "./components/Card";
-import { AddNote } from "./components/AddCard";
+import { AddNote } from "./components/AddNote";
 import { useState, useEffect } from "react";
 import supabase from "@/config/supabaseClient";
 
