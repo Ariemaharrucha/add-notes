@@ -29,7 +29,7 @@ export const Notes = () => {
     fetchNotes();
 
     const channels = supabase
-      .channel("custom-all-channel")
+      .channel("notes-channel")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "notes" },
@@ -41,6 +41,23 @@ export const Notes = () => {
 
           if (payload.eventType === "INSERT") {
             setNotes((prev) => (prev ? [...prev, newNote] : [oldNote]));
+          }
+
+          if (payload.eventType === "DELETE") {
+            const deletedNote = payload.old as INotes;
+            setNotes((prev) =>
+              prev ? prev.filter((note) => note.id !== deletedNote.id) : null
+            );
+          }
+
+          if (payload.eventType === "UPDATE") {
+            setNotes((prev) =>
+              prev
+                ? prev.map((note) =>
+                    note.id === newNote.id ? { ...note, ...newNote } : note
+                  )
+                : null
+            );
           }
         }
       )

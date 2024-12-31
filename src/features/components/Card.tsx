@@ -9,10 +9,9 @@ import {
   HStack,
   IconButton,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { toaster } from "@/components/ui/toaster";
-import { confirmAlert } from "react-confirm-alert"; // Import
+import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
 interface INotes {
@@ -24,8 +23,6 @@ interface INotes {
 }
 
 export const Card = ({ id, title, text, date, archived }: INotes) => {
-  const [isArchived, setIsArchived] = useState<boolean>(archived);
-
   async function handleDelete(id: number) {
     const { error } = await supabase.from("notes").delete().eq("id", id);
 
@@ -59,26 +56,26 @@ export const Card = ({ id, title, text, date, archived }: INotes) => {
     });
   };
 
-  async function changeArchive(id: number, archived: boolean) {
+  async function handleArchiveToggle() {
     const { error } = await supabase
       .from("notes")
       .update({ archived: !archived })
       .eq("id", id);
-
+    
     if (error) {
-      console.error("Error archiving note:", error.message);
-      return false;
+      toaster.error({
+        description: `Failed to update archive status: ${error.message}`,
+        duration: 3000,
+      });
+    } else {
+      toaster.success({
+        description: `Note ${
+          !archived ? "archived" : "unarchived"
+        } successfully`,
+        duration: 3000,
+      });
     }
-
-    return true;
   }
-
-  const handleCheckboxChange = async () => {
-    const success = await changeArchive(id, isArchived);
-    if (success) {
-      setIsArchived(!isArchived);
-    }
-  };
 
   return (
     <GridItem
@@ -98,12 +95,12 @@ export const Card = ({ id, title, text, date, archived }: INotes) => {
           </Badge>
           <HStack wrap={"wrap"}>
             <Checkbox
-              checked={isArchived}
-              onCheckedChange={handleCheckboxChange}
+              checked={archived}
+              onCheckedChange={handleArchiveToggle}
               colorPalette={"green"}
               borderRadius="md"
               borderWidth="2px"
-              cursor={'pointer'}
+              cursor={"pointer"}
             ></Checkbox>
             <IconButton
               aria-label="Delete note"
