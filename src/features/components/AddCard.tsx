@@ -16,10 +16,9 @@ import {
 } from "@/components/ui/dialog";
 
 export const AddNote = () => {
-  const [title, setTitle] = useState<string | null>(null);
-  const [content, setContent] = useState<string | null>(null);
+  const [title, setTitle] = useState<string | null>("");
+  const [content, setContent] = useState<string | null>("");
   const [date, setDate] = useState<string | null>(null);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   async function handleSaveote() {
     if (!title || !content || !date) {
@@ -46,11 +45,11 @@ export const AddNote = () => {
       description: "File saved successfully",
       duration: 3000,
     });
-    setTitle(null);
-    setContent(null);
-    setDate(null);
-    setIsOpen(false);
+    setTitle("");
+    setContent("");
+    setDate("");
   }
+
   return (
     <GridItem
       colSpan={2}
@@ -67,8 +66,6 @@ export const AddNote = () => {
       <DialogRoot
         placement={"top"}
         motionPreset="slide-in-bottom"
-        open={isOpen}
-        onOpenChange={(open) => setIsOpen(!!open)}
       >
         <DialogTrigger asChild>
           <Button
@@ -76,7 +73,7 @@ export const AddNote = () => {
             color={"blue.500"}
             fontSize={"md"}
             borderColor={"blue.300"}
-            onClick={() => setIsOpen(true)}
+            
           >
             Add Notes{" "}
           </Button>
@@ -98,6 +95,7 @@ export const AddNote = () => {
                   borderColor: "blue.500",
                   boxShadow: "0 0 0 1px blue.500",
                 }}
+                value={title}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setTitle(e.target.value)
                 }
@@ -109,6 +107,7 @@ export const AddNote = () => {
                 placeholder="Enter note content"
                 rows={6}
                 _placeholder={{ color: "gray.500" }}
+                value={content}
                 _focus={{
                   borderColor: "blue.500",
                   boxShadow: "0 0 0 1px blue.500",
