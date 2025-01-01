@@ -70,7 +70,6 @@ export const Notes = () => {
 
   return (
     <Grid templateColumns="repeat(4, 1fr)" gap="6">
-      <AddNote />
       {error && <p>{error}</p>}
       {notes &&
         notes.map((note) => {
@@ -85,6 +84,8 @@ export const Notes = () => {
             />
           );
         })}
+      <AddNote />
+
     </Grid>
   );
 };

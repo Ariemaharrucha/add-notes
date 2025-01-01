@@ -11,7 +11,7 @@ const navItems = [
 
 export const Header = () => {
   return (
-    <Box borderBottomWidth="3px" borderColor="blue.500">
+    <Box borderBottomWidth="3px" borderColor="blue.500" position={'sticky'} top={0} zIndex={10} bg={'white'}  >
       <Text fontSize={'large'} my={3} color={'blue.700'}>Your Notes</Text>
       <Flex justify="star" gap={2} py={2}>
         {navItems.map((item, index) => {
