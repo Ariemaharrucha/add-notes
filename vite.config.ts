@@ -5,4 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
+  server: {
+    port: 5174, // Ganti dengan port yang diinginkan
+  },
 })
