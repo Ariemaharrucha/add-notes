@@ -2,8 +2,25 @@ import { Grid } from "@chakra-ui/react";
 import { Card } from "./components/Card";
 import { AddNote } from "./AddNote";
 import { useNotes } from "./hooks/useNotes";
+import supabase from "@/config/supabaseClient";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export const Notes = () => {
+  const navigate = useNavigate()
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        navigate("/"); 
+      }
+    };
+
+    checkSession();
+  }, [navigate]);
   const {
     notes,
     error,
