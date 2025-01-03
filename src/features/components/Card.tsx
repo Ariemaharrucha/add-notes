@@ -1,5 +1,4 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import supabase from "@/config/supabaseClient";
 import {
   Badge,
   Box,
@@ -9,122 +8,53 @@ import {
   HStack,
   IconButton,
 } from "@chakra-ui/react";
-import { AiFillDelete, AiFillEdit } from "react-icons/ai";
-import { toaster } from "@/components/ui/toaster";
-import { confirmAlert } from "react-confirm-alert";
+import { AiFillDelete } from "react-icons/ai";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { Editable } from "@chakra-ui/react"
-import React, { useState } from "react";
+import { Editable } from "@chakra-ui/react";
 
-interface INotes {
+interface ICardProps {
   id: number;
   title: string;
   text: string;
   date: string;
   archived: boolean;
+  onDelete: (id: number) => void;
+  onArchived: (id: number, archived: boolean) => void;
+  handleTitleUpdate: (id: number, newTitle: string, title: string) => void;
+  handleTitle: () => void;
+  editedTitle: string;
+  handleContentUpdate: (
+    id: number,
+    newContent: string,
+    content: string
+  ) => void;
+  handleContent: () => void;
+  editedContent: string;
 }
 
-export const Card = ({ id, title, text, date, archived }: INotes) => {
-  const [editedTitle, setEditedTitle] = useState(title);
-  const [editedContent, setEditedContent] = useState(text);
-
-  async function handleDelete(id: number) {
-    const { error } = await supabase.from("notes").delete().eq("id", id);
-
-    if (error) {
-      toaster.error({
-        description: `Failed to delete note: ${error.message}`,
-        duration: 3000,
-      });
-      return;
+export const Card = ({
+  id,
+  title,
+  text,
+  date,
+  archived,
+  onDelete,
+  onArchived,
+  handleTitleUpdate,
+  handleTitle,
+  editedTitle,
+  handleContentUpdate,
+  handleContent,
+  editedContent,
+}: ICardProps) => {
+  const formattedDate = new Date(date + "T00:00:00").toLocaleDateString(
+    "id-ID",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
     }
-
-    toaster.success({
-      description: "Note deleted successfully",
-      duration: 3000,
-    });
-  }
-
-  const confirmDelete = (id: number) => {
-    confirmAlert({
-      title: "Confirm to delete",
-      message: "Are you sure you want to delete this note?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => handleDelete(id),
-        },
-        {
-          label: "No",
-        },
-      ],
-    });
-  };
-
-  async function handleArchiveToggle() {
-    const { error } = await supabase
-      .from("notes")
-      .update({ archived: !archived })
-      .eq("id", id);
-    
-    if (error) {
-      toaster.error({
-        description: `Failed to update archive status: ${error.message}`,
-        duration: 3000,
-      });
-    } else {
-      toaster.success({
-        description: `Note ${
-          !archived ? "archived" : "unarchived"
-        } successfully`,
-        duration: 3000,
-      });
-    }
-  }
-
-  async function handleTitleUpdate (newTitle: string) {
-    const { error } = await supabase
-      .from("notes")
-      .update({ title: newTitle })
-      .eq("id", id);
-
-      if (error) {
-        toaster.error({
-          description: `Failed to update archive status: ${error.message}`,
-          duration: 3000,
-        });
-        setEditedTitle(title)
-      } else {
-        toaster.success({
-          description: `Note ${
-            !archived ? "archived" : "unarchived"
-          } successfully`,
-          duration: 3000,
-        });
-      }
-  }
-  
-  async function handleContentUpdate (newContent: string) {
-    const { error } = await supabase
-      .from("notes")
-      .update({ note_content: newContent })
-      .eq("id", id);
-
-      if (error) {
-        toaster.error({
-          description: `Failed to update archive status: ${error.message}`,
-          duration: 3000,
-        });
-        setEditedTitle(title)
-      } else {
-        toaster.success({
-          description: `Note ${
-            !archived ? "archived" : "unarchived"
-          } successfully`,
-          duration: 3000,
-        });
-      }
-  } 
+  );
 
   return (
     <GridItem
@@ -145,7 +75,7 @@ export const Card = ({ id, title, text, date, archived }: INotes) => {
           <HStack wrap={"wrap"}>
             <Checkbox
               checked={archived}
-              onCheckedChange={handleArchiveToggle}
+              onCheckedChange={() => onArchived(id, archived)}
               colorPalette={"green"}
               borderRadius="md"
               borderWidth="2px"
@@ -155,7 +85,7 @@ export const Card = ({ id, title, text, date, archived }: INotes) => {
               aria-label="Delete note"
               bg={"white"}
               color={"red.500"}
-              onClick={() => confirmDelete(id)}
+              onClick={() => onDelete(id)}
               borderRadius="md"
               borderWidth="3px"
               borderColor="red.300"
@@ -167,21 +97,6 @@ export const Card = ({ id, title, text, date, archived }: INotes) => {
             >
               <AiFillDelete />
             </IconButton>
-            <IconButton
-              aria-label="Edit note"
-              color={"blue.600"}
-              bg={"white"}
-              borderRadius="md"
-              borderWidth="3px"
-              borderColor="blue.400"
-              _hover={{
-                bg: "blue.50",
-                color: "blue.800",
-                borderColor: "blue.500",
-              }}
-            >
-              <AiFillEdit />
-            </IconButton>
           </HStack>
         </Flex>
         <Box flex={"1"} color={"gray.600"}>
@@ -190,19 +105,28 @@ export const Card = ({ id, title, text, date, archived }: INotes) => {
             fontSize={"large"}
             mt={2}
             textWrap={"wrap"}
-            value={editedTitle}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditedTitle(e.target.value)}
+            value={title}
+            onChange={handleTitle}
           >
-            <Editable.Preview width={'full'}/>
-            <Editable.Input onBlur={() => handleTitleUpdate(editedTitle)}/>
+            <Editable.Preview width={"full"} />
+            <Editable.Input
+              onBlur={() => handleTitleUpdate(id, editedTitle, title)}
+            />
           </Editable.Root>
-          <Editable.Root value={text} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditedContent(e.target.value)}>
-            <Editable.Preview alignItems="flex-start" width="full" lineClamp={5} fontSize={'md'} />
-            <Editable.Textarea onBlur={()=>handleContentUpdate(editedContent)}/>
+          <Editable.Root value={text} onChange={handleContent}>
+            <Editable.Preview
+              alignItems="flex-start"
+              width="full"
+              lineClamp={5}
+              fontSize={"md"}
+            />
+            <Editable.Textarea
+              onBlur={() => handleContentUpdate(id, editedContent, text)}
+            />
           </Editable.Root>
         </Box>
         <Text ml={"auto"} mt={3} color={"gray.600"}>
-          {date}
+          {formattedDate}
         </Text>
       </Flex>
     </GridItem>

@@ -1,6 +1,5 @@
 import { GridItem, Input, Textarea } from "@chakra-ui/react";
 import { Button } from "@/components/ui/button";
-import supabase from "@/config/supabaseClient";
 import { toaster } from "@/components/ui/toaster";
 import { useState } from "react";
 import {
@@ -15,40 +14,31 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export const AddNote = () => {
+interface IAddNoteProps {
+  onAdd: (note: { title: string; note_content: string; date: string }) => void;
+}
+
+export const AddNote = ({ onAdd }: IAddNoteProps) => {
   const [title, setTitle] = useState<string | null>("");
   const [content, setContent] = useState<string | null>("");
   const [date, setDate] = useState<string | null>(null);
 
-  async function handleSaveote() {
+  const handleSave = () => {
     if (!title || !content || !date) {
-      toaster.error({
-        description: "Fill All Field",
-        duration: 3000,
-      });
+      alert("All fields are required.");
       return;
     }
-    const { data, error } = await supabase
-      .from("notes")
-      .insert([{ title, note_content: content, date: date }]);
-    console.log(`Triggering toaster.create ${data}`);
-
-    if (error) {
-      toaster.error({
-        description: `${error}`,
-        duration: 3000,
-      });
-      return;
-    }
+    onAdd({ title, note_content: content, date });
 
     toaster.success({
       description: "File saved successfully",
       duration: 3000,
     });
+
     setTitle("");
     setContent("");
     setDate("");
-  }
+  };
 
   return (
     <GridItem
@@ -63,17 +53,13 @@ export const AddNote = () => {
       alignItems="center"
       borderColor={"blue.300"}
     >
-      <DialogRoot
-        placement={"top"}
-        motionPreset="slide-in-bottom"
-      >
+      <DialogRoot placement={"top"} motionPreset="slide-in-bottom">
         <DialogTrigger asChild>
           <Button
             variant="outline"
             color={"blue.500"}
             fontSize={"md"}
             borderColor={"blue.300"}
-            
           >
             Add Notes{" "}
           </Button>
@@ -137,7 +123,7 @@ export const AddNote = () => {
             <DialogActionTrigger asChild>
               <Button variant="outline">Cancel</Button>
             </DialogActionTrigger>
-            <Button bg={"blue.600"} onClick={handleSaveote}>
+            <Button bg={"blue.600"} onClick={handleSave}>
               Save
             </Button>
           </DialogFooter>
