@@ -30,6 +30,7 @@ export const AddNote = ({ onAdd }: IAddNoteProps) => {
       alert("All fields are required.");
       return;
     }
+    
     onAdd({ title, note_content: content, date, user_id: userId});
 
     toaster.success({
@@ -37,9 +38,6 @@ export const AddNote = ({ onAdd }: IAddNoteProps) => {
       duration: 3000,
     });
 
-    setTitle("");
-    setContent("");
-    setDate("");
   };
 
   return (
