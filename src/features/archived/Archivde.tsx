@@ -2,9 +2,24 @@ import { Grid } from "@chakra-ui/react";
 import { Card } from "../components/Card";
 import { useNotes } from "../hooks/useNotes";
 import { useArchived } from "./hooks/useArchived";
+import supabase from "@/config/supabaseClient";
+import { useEffect, useState } from "react";
 
 export const Archivide = () => {
-  const { error, notes } = useArchived();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (data && data.user) {
+        setUserId(data.user.id);
+      }
+    };
+
+    getUserData();
+  }, []);
+
+  const {error, notes} = useArchived(userId || "");
 
   const {
     confirmDelete,

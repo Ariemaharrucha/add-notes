@@ -6,14 +6,31 @@ import { confirmAlert } from "react-confirm-alert";
 
 export const useNotes = () => {
   const [notes, setNotes] = useState<INotes[]>([]);
+  const [userId, setUSerId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [editedTitle, setEditedTitle] = useState<string>("");
   const [editedContent, setEditedContent] = useState<string>("");
 
+  useEffect(() => {
+    const getUserData = async () => {
+      const { data, error } = await supabase.auth.getUser();
+    
+      if (error || !data?.user) {
+        setError("No user session found.");
+        return;
+      }
+    
+      setUSerId(data.user.id);
+    };
+    
+    getUserData();
+  }, []);
+
   // fetch data
   useEffect(() => {
+    if (!userId) return;
     const fetchNotes = async () => {
-      const { data, error } = await supabase.from("notes").select("*");
+      const { data, error } = await supabase.from("notes").select('*').eq("user_id", userId);
       if (error) {
         setError("error fetch data");
         setNotes([]);
@@ -57,7 +74,7 @@ export const useNotes = () => {
     return () => {
       supabase.removeChannel(channels);
     };
-  }, []);
+  }, [userId]);
 
   const addNote = async (note: Omit<INotes, "id" | "archived">) => {
     const { data, error } = await supabase.from("notes").insert([note]);
@@ -164,6 +181,7 @@ export const useNotes = () => {
   };
 
   return {
+    userId,
     notes,
     error,
     addNote,

@@ -4,4 +4,5 @@ export interface INotes {
   note_content: string;
   date: string;
   archived: boolean;
+  user_id?: string;
 }

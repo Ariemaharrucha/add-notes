@@ -1,50 +1,98 @@
-# React + TypeScript + Vite
+# Add-Notes Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Add-Notes is a simple note-taking application designed to help users organize and manage their tasks, ideas, and others. The application provides a clean and intuitive interface to add, edit, and delete notes. It leverages Supabase for database management and uses Google OAuth for secure user authentication.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Create Notes**: Quickly add new notes with a title and description.
+- **Edit Notes**: Update existing notes to keep your information accurate and relevant.
+- **Delete Notes**: Remove notes that are no longer needed.
+- **Google OAuth Authentication**: Secure login with Google accounts.
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Prerequisites
 
-- Configure the top-level `parserOptions` property like this:
+- Node.js
+- npm
+- Supabase account
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Steps
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+1. Clone the repository:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+   ```bash
+   https://github.com/Ariemaharrucha/add-notes.git
+   ```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+2. Navigate to the project directory:
+
+   ```bash
+   cd add-notes
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Configure environment variables:
+   Create a `.env` file in the root directory with the following:
+
+   ```env
+   VITE_PROJECT_URL=YOUR_PROJECT_URL
+   VITE_SUPABASE_API_KEY=YOUR_SUPABASE_API_KEY
+   CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
+   CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
+   ```
+
+5. Start the development server:
+
+   ```bash
+   npm start
+   ```
+
+6. Open the application in your browser.
+
+## Technologies Used
+
+- **Frontend**: React, Tailwind CSS
+- **Database**: Supabase
+- **Authentication**: Google OAuth
+
+## Usage
+
+1. Open the application in your browser.
+2. Log in using your Google account.
+3. Use the "Add Note" button to create a new note.
+4. Click on a note to edit its content.
+5. Delete notes by clicking the delete button.
+
+## Contributing
+
+We welcome contributions to improve the Add-Notes application. To contribute:
+
+1. Fork the repository.
+2. Create a new branch:
+   ```bash
+   git checkout -b feature-name
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Description of changes"
+   ```
+4. Push to your branch:
+   ```bash
+   git push origin feature-name
+   ```
+5. Open a pull request.
+
+## Contact
+
+For questions or feedback, please reach out:
+
+- **Email**: [arie.maharucha.zakka@gmail.com](mailto:arie.maharucha.zakka@gmail.com)
+- **GitHub**: [https://github.com/Ariemaharrucha](https://github.com/Ariemaharrucha)
+
+

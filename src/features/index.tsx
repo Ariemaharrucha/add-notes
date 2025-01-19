@@ -10,10 +10,7 @@ export const Notes = () => {
   const navigate = useNavigate()
   useEffect(() => {
     const checkSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate("/"); 
       }

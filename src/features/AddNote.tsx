@@ -13,22 +13,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useNotes } from "./hooks/useNotes";
 
 interface IAddNoteProps {
-  onAdd: (note: { title: string; note_content: string; date: string }) => void;
+  onAdd: (note: { title: string; note_content: string; date: string, user_id: string }) => void;
 }
 
 export const AddNote = ({ onAdd }: IAddNoteProps) => {
   const [title, setTitle] = useState<string | null>("");
   const [content, setContent] = useState<string | null>("");
   const [date, setDate] = useState<string | null>(null);
+  const {userId} = useNotes();
 
   const handleSave = () => {
     if (!title || !content || !date) {
       alert("All fields are required.");
       return;
     }
-    onAdd({ title, note_content: content, date });
+    onAdd({ title, note_content: content, date, user_id: userId});
 
     toaster.success({
       description: "File saved successfully",

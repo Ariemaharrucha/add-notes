@@ -2,7 +2,7 @@ import supabase from "@/config/supabaseClient";
 import { INotes } from "@/utils/note";
 import { useEffect, useState } from "react";
 
-export const useArchived = () => {
+export const useArchived = (userId : string) => {
   const [error, setError] = useState<string | null>(null);
   const [notes, setNotes] = useState<INotes[] | null>(null);
 
@@ -11,8 +11,8 @@ export const useArchived = () => {
       const { data, error } = await supabase
         .from("notes")
         .select("*")
-        .eq("archived", true);
-
+        .eq("archived", true)
+        .eq("user_id", userId)
       if (error) {
         setError("Error fetching data");
         setNotes(null);
@@ -22,7 +22,9 @@ export const useArchived = () => {
       setNotes(data);
       setError(null);
     };
-    fetchNotes();
+    if(userId) {
+      fetchNotes();
+    }
 
     const channels = supabase
       .channel("archived-notes-channel")
@@ -71,7 +73,7 @@ export const useArchived = () => {
     return () => {
       supabase.removeChannel(channels);
     };
-  }, []);
+  }, [userId]);
 
   return { error, notes };
 };

@@ -37,7 +37,7 @@ export const Login = () => {
   }
 
   return (
-    <Center>
+    <Center m={'auto'} width={400}>
       <Box w={"4xl"}>
         <Auth
           supabaseClient={supabase}
